@@ -1,0 +1,50 @@
+@startuml
+partition User {
+    (*)  --> "Click Button"
+    --> === S1 ===
+}
+
+partition LetsRobot.tv {
+    === S1 === --> Send JSON-defined string
+    --> === S2 ===
+}
+
+partition RaspberryPi {
+
+    partition controller.py {
+        === S2 === --> Receive string
+        --> === S3 ===
+    }
+
+    partition HTTPProxy {
+        === S3 === -left-> Construct HTTP request
+        --> Send HTTP request
+        --> === S4 ===
+    }
+}
+
+partition Nubcore060 {
+    === S4 === -> Receive HTTP request
+    --> Extract command from request
+    --> Forward command via serial port
+    --> === S5 ===
+}
+
+partition ArduinoUNO {
+
+    partition sumobot.ino {
+        === S5 === --> Receive serial command
+        --> Parse serial command
+        if command is valid then
+            --> Drive motors
+            --> (*)
+        else
+            --> Discard command
+            --> (*)
+        endif
+
+    }
+
+}
+
+@enduml

@@ -1,0 +1,41 @@
+@startuml
+title sumobot.io loop()
+
+(*) --> set current timestamp
+if last command has timed out
+    --> stop motors
+    --> === S5 ===
+else
+    --> === S5 ===
+endif
+
+ === S5 === --> Call recvWithStartEndMarkers(txLength,startMarker,endMarker,receivedChars)
+ --> === S8 ===
+
+
+partition SerialExp {
+
+    partition recvWithStartEndMarkers(txLength,startMarker,endMarker,receivedChars) {
+            === S8 === --> Copy serial buffer into receivedChars
+            --> === S9 ===
+    }
+}
+
+partition parse_serial_command() {
+    === S9 === --> copy command from message[0]
+    --> === S10 ===
+}
+
+partition drive_motors(cmd) {
+        if cmd is 'f', 't', 'b', 'l', 'r', 'c', 'a', or 's' then
+            --> Drive motors
+            --> === S11 ===
+
+        else
+            --> Discard command
+            --> === S11 ===
+        endif
+}
+=== S11 === --> (*)
+
+@enduml
