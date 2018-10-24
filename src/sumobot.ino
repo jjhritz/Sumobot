@@ -111,7 +111,7 @@ void loop()
     }
 
     // receive message from Nub060
-    recvWithStartEndMarkers(messageSize, '<', '>', message);
+    recvWithStartEndMarkers(messageSize, '[', ']', message);
 
     // if we've received a complete message,
     if (newData == true)
